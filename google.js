@@ -1,6 +1,7 @@
 const fs = require('fs');
 const readline = require('readline');
 const {google} = require('googleapis');
+const { time } = require('console');
 
 require('dotenv').config();
 
@@ -29,11 +30,19 @@ async function viewEventsToday() {
     console.log(res.data);
 }
 
-async function listCalendars() {
+async function findCalendar(title) {
+
     const res = await calendar.calendarList.list();
+
     const calendarItems = res.data.items;
+
     for (let i = 0; i < calendarItems.length; i++){
-        console.log(i+1, calendarItems[i].summary, "\n  >", calendarItems[i].id);
+        const query = String(title);
+
+        if (query.toLowerCase() === (calendarItems[i].summary).toLowerCase()){
+            const result = calendarItems[i].id;
+            return result;
+        };
     };
 }
 
@@ -58,6 +67,45 @@ async function createCalendar(title){
     console.log('Successfully created calendar with title ', res.data.summary);
 }
 
-async function addEvent(title, timeEnd, timeStart, date)
 
-createCalendar("create test");
+
+async function addEvent(eventTitle, eventStartTime = undefined, eventEndTime = undefined, timeZone = 'Asia/Manila', calendarTitle = 'Notif Test'){
+    
+    if (!eventStartTime) {
+        eventStartTime = new Date();
+        eventStartTime.setDate(eventStartTime.getDate() + 1);     
+    }
+
+    if (!eventEndTime) {
+        eventEndTime = new Date();
+        eventEndTime.setDate(eventEndTime.getDate() + 1);
+        eventEndTime.setHours(eventEndTime.getHours() + 1);
+    }
+
+    console.log(eventStartTime, '\n', eventEndTime);
+
+    findCalendar(calendarTitle).then( (calId) =>{
+
+        const res = calendar.events.insert({
+
+            calendarId: calId,
+
+            requestBody: {
+                summary: eventTitle,
+
+                start: {
+                    dateTime: eventStartTime,
+                    timeZone: timeZone
+                },
+
+                end: {
+                    dateTime: eventEndTime,
+                    timeZone: timeZone
+                }
+            }
+        })
+    })
+};
+
+
+module.exports = {addEvent}

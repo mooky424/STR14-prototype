@@ -1,7 +1,8 @@
 require("dotenv").config();
 const express = require("express");
 const axios = require("axios").default;
-const { Client, Intents, WebhookClient } = require('discord.js');
+const { Client, Intents, Constants } = require('discord.js');
+const calendar = require('./google');
 
 const app = express();
 const port = 3000;
@@ -43,7 +44,15 @@ client.on('ready', () => {
 
   commands?.create({
     name: 'eventadd',
-    description: 'Adds an event to calendar'
+    description: 'Adds an event to calendar',
+    options: [
+      {
+        name: 'title',
+        description: 'The title of the event',
+        required: true,
+        type: Constants.ApplicationCommandOptionTypes.STRING
+      }
+    ]
   })
 
 })
@@ -52,12 +61,20 @@ client.on('interactionCreate', async (interaction) => {
   if(!interaction.isCommand){
     return
   }
-  console.log(interaction);
   const { commandName, options } = interaction;
 
   if (commandName === 'eventadd') {
-    interaction.reply({
-      content: 'Event added'
+
+    const title = options.getString('title');
+
+    await interaction.deferReply({
+      ephemereal: true
+    });
+
+    calendar.addEvent(title).then( () => {
+      interaction.editReply({
+        content: 'Event added'
+      })
     })
   }
 })
