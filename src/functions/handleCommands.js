@@ -6,7 +6,6 @@ module.exports = (client) => {
     
     const clientId = process.env.DISCORD_CLIENTID;
     const guildId = process.env.DISCORD_GUILDID;
-    console.log(clientId, guildId);
 
     client.handleCommands = async (commandFolders, path) => {
         client.commandArray = [];
@@ -47,7 +46,6 @@ module.exports = (client) => {
   Commands to add
   /event add {title} {date} {timeStart} {timeEnd}
   /event delete {number} 
-  /event upcoming - Shows upcoming 10 events
   /event today - Shows events today
   /calendar view - Links id of calendar
 */

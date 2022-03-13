@@ -1,7 +1,11 @@
 const fs = require('fs');
 const readline = require('readline');
-const {google} = require('googleapis');
-const { time } = require('console');
+const {
+    google
+} = require('googleapis');
+const {
+    time
+} = require('console');
 
 require('dotenv').config();
 
@@ -12,22 +16,45 @@ oAuth2Client.setCredentials({
     refresh_token: process.env.REFRESH_TOKEN
 });
 
-const calendar = google.calendar ({version: 'v3', auth: oAuth2Client})
+const calendar = google.calendar({
+    version: 'v3',
+    auth: oAuth2Client
+})
 
 async function viewCalendar(calendarId) {
     const res = await calendar.calendars.get({
         calendarId: calendarId
     });
-    
+
     console.log(res.data);
 };
 
-async function viewEventsToday() {
-    const res = await calendar.events.list({
-        calendarId: '2s5p6fl194vtq7ulk0951r2q9s@group.calendar.google.com'
-    });
+async function viewEvents(date = null) {
 
-    console.log(res.data);
+    const timeMin = new Date();
+    const timeMax = new Date();
+
+    if (date){
+        timeMin.setDate(date.getDate());   
+        timeMax.setDate(date.getDate())     
+    } 
+    timeMin.setMinutes(0);
+    timeMin.setHours(0);
+    timeMax.setMinutes(59);
+    timeMax.setHours(23)
+
+    console.log(timeMin,timeMax);
+
+    const res = await calendar.events.list({
+        calendarId: '2s5p6fl194vtq7ulk0951r2q9s@group.calendar.google.com',
+        // maxResults: 10,
+        timeMin: timeMin.toISOString(),
+        timeMax: timeMax.toISOString()        
+    }).then(res => {
+
+        console.log(res.data.items);
+
+    });
 }
 
 async function findCalendar(title) {
@@ -36,30 +63,30 @@ async function findCalendar(title) {
 
     const calendarItems = res.data.items;
 
-    for (let i = 0; i < calendarItems.length; i++){
+    for (let i = 0; i < calendarItems.length; i++) {
         const query = String(title);
 
-        if (query.toLowerCase() === (calendarItems[i].summary).toLowerCase()){
+        if (query.toLowerCase() === (calendarItems[i].summary).toLowerCase()) {
             const result = calendarItems[i].id;
             return result;
         };
     };
 }
 
-async function addCalendar(calendarId){
+async function addCalendar(calendarId) {
     const res = calendar.calendarList.insert({
         "colorRgbFormat": false,
-      "resource": {
-        "id": calendarId
-      }
+        "resource": {
+            "id": calendarId
+        }
     });
 
     console.log(res.data);
 }
 
-async function createCalendar(title){
+async function createCalendar(title) {
     const res = await calendar.calendars.insert({
-        requestBody:{
+        requestBody: {
             summary: title
         }
     })
@@ -69,11 +96,13 @@ async function createCalendar(title){
 
 
 
-async function addEvent(eventTitle, eventStartTime = undefined, eventEndTime = undefined, timeZone = 'Asia/Manila', calendarTitle = 'Notif Test'){
-    
+async function addEvent(eventTitle, eventDescription = undefined, eventStartTime = undefined, eventEndTime = undefined, timeZone = 'Asia/Manila', calendarTitle = 'Notif Test') {
+
+    console.log('Inserting Event');
+
     if (!eventStartTime) {
         eventStartTime = new Date();
-        eventStartTime.setDate(eventStartTime.getDate() + 1);     
+        eventStartTime.setDate(eventStartTime.getDate() + 1);
     }
 
     if (!eventEndTime) {
@@ -82,9 +111,7 @@ async function addEvent(eventTitle, eventStartTime = undefined, eventEndTime = u
         eventEndTime.setHours(eventEndTime.getHours() + 1);
     }
 
-    console.log(eventStartTime, '\n', eventEndTime);
-
-    findCalendar(calendarTitle).then( (calId) =>{
+    findCalendar(calendarTitle).then((calId) => {
 
         const res = calendar.events.insert({
 
@@ -92,20 +119,24 @@ async function addEvent(eventTitle, eventStartTime = undefined, eventEndTime = u
 
             requestBody: {
                 summary: eventTitle,
-
+                description: eventDescription,
                 start: {
                     dateTime: eventStartTime,
                     timeZone: timeZone
                 },
-
                 end: {
                     dateTime: eventEndTime,
                     timeZone: timeZone
                 }
             }
+        }).then(res => {
+            console.log('Request Status:', res.status);
         })
     })
 };
 
 
-module.exports = {addEvent}
+
+module.exports = {
+    addEvent
+}
