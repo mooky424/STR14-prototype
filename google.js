@@ -22,12 +22,11 @@ const calendar = google.calendar({
     auth: oAuth2Client
 })
 
-async function viewCalendar() {
+async function viewCalendar(callback) {
     const res = await calendar.calendars.get({
         calendarId: calendarId
     });
-
-    console.log(res.data);
+    callback(res.data.id);
 };
 
 async function viewEvents(upcoming = false, callback) {
@@ -46,7 +45,7 @@ async function viewEvents(upcoming = false, callback) {
         timeMax.setHours(23)
     }
 
-    console.log('From:', timeMin + "\nTo:", timeMax);
+    console.log('Viewing events','from', timeMin + "\nto", timeMax);
 
     const res = await calendar.events.list({
         calendarId: calendarId,
@@ -71,6 +70,7 @@ async function viewEvents(upcoming = false, callback) {
             });
         }
         callback(eventsArray);
+        console.log('Events viewed');
     });
 }
 

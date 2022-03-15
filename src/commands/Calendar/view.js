@@ -24,6 +24,7 @@ module.exports = {
 		),
 	async execute(interaction) {
 		if (interaction.options.getSubcommand() === 'upcoming') {
+			console.log("User is viewing upcoming");
 			calendar.viewEvents(true, async (items) => {
 				const eventEmbed = new MessageEmbed()
 					.setTitle('Upcoming Events')
@@ -46,8 +47,10 @@ module.exports = {
 					embeds: [eventEmbed],
 					ephemeral: true
 				});
+				console.log("Success!");
 			})
 		} else if (interaction.options.getSubcommand() === 'today') {
+			console.log("User is viewing today");
 			calendar.viewEvents(false, async (items) => {
 				const eventEmbed = new MessageEmbed()
 					.setTitle('Events Today')
@@ -70,9 +73,17 @@ module.exports = {
 					embeds: [eventEmbed],
 					ephemeral: true
 				});
+				console.log("Success!");
 			})
 		} else if (interaction.options.getSubcommand() === 'calendar') {
-			calendar.viewCalendar()
+			console.log("User is viewing calendar");
+			calendar.viewCalendar((id) => {
+				interaction.reply({
+					content: `Calendar Id: ${id}\nUse this ID to subscribe to the calendar`,
+					ephemeral: true
+				});
+				console.log("Success!");
+			})
 		}
 
 	},
