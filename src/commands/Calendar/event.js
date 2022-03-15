@@ -2,8 +2,7 @@ const {
 	SlashCommandBuilder
 } = require('@discordjs/builders');
 const {
-	MessageEmbed,
-	MessageAttachment
+	MessageEmbed
 } = require('discord.js');
 const calendar = require(`../../../google`);
 
@@ -48,7 +47,7 @@ const checkState = async function (interaction, state, callback) {
 	} else {
 		interaction.reply({
 			content: 'No ongoing event creation',
-			ephemereal: true
+			ephemeral: true
 		});
 	}
 }
@@ -78,7 +77,7 @@ const eventEmbed = new MessageEmbed()
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('event')
-		.setDescription('Involves the events of the calendars')
+		.setDescription('Creates events for the calendar')
 		.addSubcommand(subcommand => subcommand.setName('create')
 			.setDescription('Creates event creation wizard')
 			.addStringOption(option => option.setName('title').setDescription('Event Title').setRequired(true))
@@ -127,11 +126,11 @@ module.exports = {
 
 				await interaction.reply({
 					embeds: [eventEmbed],
-					ephemereal: true
+					ephemeral: true
 				});
 			} else await interaction.reply({
 				content: 'Ongoing event creation wizard (Use /event cancel to quit or /event review to complete)',
-				ephemereal: true
+				ephemeral: true
 			});
 
 		} else if (interaction.options.getSubcommand() === 'cancel') {
@@ -140,7 +139,7 @@ module.exports = {
 				resetValues();
 				await interaction.reply({
 					content: 'Event creation cancelled',
-					ephemereal: true
+					ephemeral: true
 				})
 			})
 
@@ -149,7 +148,7 @@ module.exports = {
 			await checkState(interaction, eventWizardState, async () => {
 				await interaction.reply({
 					embeds: [eventEmbed],
-					ephemereal: true
+					ephemeral: true
 				})
 			})
 
@@ -163,7 +162,7 @@ module.exports = {
 				})
 				await interaction.reply({
 					embeds: [eventEmbed],
-					ephemereal: true
+					ephemeral: true
 				})
 			})
 
@@ -176,7 +175,6 @@ module.exports = {
 				const minute = interaction.options.getInteger('minute') || 0;
 
 				start = new Date(year, month, day, hour, minute);
-				let stringDate = start.toString();
 
 				eventEmbed.spliceFields(2, 1, {
 					name: 'Start Time',
@@ -184,7 +182,7 @@ module.exports = {
 				});
 				await interaction.reply({
 					embeds: [eventEmbed],
-					ephemereal: true
+					ephemeral: true
 				});
 			})
 		} else if (interaction.options.getSubcommand() === 'end') {
@@ -200,17 +198,16 @@ module.exports = {
 				if (start > end) {
 					await interaction.reply({
 						content: `The date you inputted is earlier than the starting date. Please Try Again`,
-						ephemereal: true
+						ephemeral: true
 					})
 				} else {
-					let stringDate = end.toString();
 					eventEmbed.spliceFields(3, 1, {
 						name: 'End Time',
 						value: end.toString()
 					});
 					await interaction.reply({
 						embeds: [eventEmbed],
-						ephemereal: true
+						ephemeral: true
 					});
 				}
 			})
@@ -233,7 +230,7 @@ module.exports = {
 						});
 
 					await interaction.deferReply({
-						ephemereal: true
+						ephemeral: true
 					})
 
 					calendar.addEvent(title, description, start, end).then(async () => {
@@ -242,13 +239,14 @@ module.exports = {
 
 					await interaction.editReply({
 						content: `Succesfully inserted the event:`,
-						embeds: [reportEmbed]
+						embeds: [reportEmbed],
+						ephemeral: false
 					})
 
 				} else {
 					await interaction.reply({
 						content: `There are no valid dates inputted. Please try again`,
-						ephemereal: true
+						ephemeral: true
 					})
 				}
 

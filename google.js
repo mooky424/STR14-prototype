@@ -6,6 +6,7 @@ const {
 const {
     time
 } = require('console');
+const {calendarId} = require('./config.json');
 
 require('dotenv').config();
 
@@ -21,7 +22,7 @@ const calendar = google.calendar({
     auth: oAuth2Client
 })
 
-async function viewCalendar(calendarId) {
+async function viewCalendar() {
     const res = await calendar.calendars.get({
         calendarId: calendarId
     });
@@ -29,31 +30,47 @@ async function viewCalendar(calendarId) {
     console.log(res.data);
 };
 
-async function viewEvents(date = null) {
+async function viewEvents(upcoming = false, callback) {
+
+    const eventsArray = [];
 
     const timeMin = new Date();
     const timeMax = new Date();
 
-    if (date){
-        timeMin.setDate(date.getDate());   
-        timeMax.setDate(date.getDate())     
-    } 
-    timeMin.setMinutes(0);
-    timeMin.setHours(0);
-    timeMax.setMinutes(59);
-    timeMax.setHours(23)
+    if (upcoming) {        
+        timeMax.setFullYear(timeMax.getFullYear() + 1);
+    } else {
+        timeMin.setMinutes(0);
+        timeMin.setHours(0);
+        timeMax.setMinutes(59);
+        timeMax.setHours(23)
+    }
 
-    console.log(timeMin,timeMax);
+    console.log('From:', timeMin + "\nTo:", timeMax);
 
     const res = await calendar.events.list({
-        calendarId: '2s5p6fl194vtq7ulk0951r2q9s@group.calendar.google.com',
-        // maxResults: 10,
+        calendarId: calendarId,
+        maxResults: 10,
+        orderBy: 'startTime',
+        singleEvents: true,
         timeMin: timeMin.toISOString(),
-        timeMax: timeMax.toISOString()        
+        timeMax: timeMax.toISOString()
     }).then(res => {
 
-        console.log(res.data.items);
-
+        const data = res.data.items;
+        for (i=0;i<data.length;i++) {
+            const eventTitle = data[i].summary;
+            const eventMeetLink = data[i].hangoutLink;
+            const eventStart = data[i].start.dateTime;
+            const eventEnd = data[i].end.dateTime;
+            eventsArray.push({
+                eventTitle,
+                eventMeetLink,
+                eventStart,
+                eventEnd,
+            });
+        }
+        callback(eventsArray);
     });
 }
 
@@ -73,32 +90,9 @@ async function findCalendar(title) {
     };
 }
 
-async function addCalendar(calendarId) {
-    const res = calendar.calendarList.insert({
-        "colorRgbFormat": false,
-        "resource": {
-            "id": calendarId
-        }
-    });
+async function addEvent(eventTitle, eventDescription = undefined, eventStartTime = undefined, eventEndTime = undefined, timeZone = 'Asia/Manila') {
 
-    console.log(res.data);
-}
-
-async function createCalendar(title) {
-    const res = await calendar.calendars.insert({
-        requestBody: {
-            summary: title
-        }
-    })
-
-    console.log('Successfully created calendar with title ', res.data.summary);
-}
-
-
-
-async function addEvent(eventTitle, eventDescription = undefined, eventStartTime = undefined, eventEndTime = undefined, timeZone = 'Asia/Manila', calendarTitle = 'Notif Test') {
-
-    console.log('Inserting Event');
+    console.log(`Inserting Event with title ${eventTitle}`);
 
     if (!eventStartTime) {
         eventStartTime = new Date();
@@ -110,12 +104,9 @@ async function addEvent(eventTitle, eventDescription = undefined, eventStartTime
         eventEndTime.setDate(eventEndTime.getDate() + 1);
         eventEndTime.setHours(eventEndTime.getHours() + 1);
     }
-
-    findCalendar(calendarTitle).then((calId) => {
-
         const res = calendar.events.insert({
 
-            calendarId: calId,
+            calendarId: calendarId,
 
             requestBody: {
                 summary: eventTitle,
@@ -132,11 +123,24 @@ async function addEvent(eventTitle, eventDescription = undefined, eventStartTime
         }).then(res => {
             console.log('Request Status:', res.status);
         })
-    })
 };
 
 
 
+function parseDatetoString(s, date, time) {
+	const tempDate = new Date(s);
+	const b = (tempDate.toString()).split(' ');
+	if (date && time) {
+		return `${b[0]} ${b[1]} ${b[2]} ${b[3]} ${b[4]}`
+	} else if (time) {
+		return `${b[4]}`
+	}
+}
+
+
 module.exports = {
-    addEvent
+    addEvent,
+    viewEvents,
+    viewCalendar,
+    parseDatetoString
 }

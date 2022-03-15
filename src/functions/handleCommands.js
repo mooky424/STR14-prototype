@@ -44,8 +44,5 @@ module.exports = (client) => {
 
 /*
   Commands to add
-  /event add {title} {date} {timeStart} {timeEnd}
   /event delete {number} 
-  /event today - Shows events today
-  /calendar view - Links id of calendar
 */

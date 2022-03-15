@@ -3,7 +3,8 @@ const fs = require('fs');
 const {
   Client,
   Intents,
-  Collection
+  Collection,
+  MessageEmbed
 } = require('discord.js');
 const calendar = require('../google');
 
@@ -41,8 +42,14 @@ client.commands = new Collection();
 client.on('ready', () => {
   //When server receives POST request, send details to discord
   app.post("/", (req, res) => {
-    const { eventTitle } = req.body;
-    client.channels.cache.get(process.env.DISCORD_CHANNELID).send('testing outside');
+    const { eventTitle, eventLink} = req.body;
+
+    const eventEmbed = new MessageEmbed()
+      .setTitle(`${eventTitle} is starting in 15 minutes!\nMeet Link: ${eventLink}`) 
+    client.channels.cache.get(process.env.DISCORD_CHANNELID).send({
+      content: 'Hello Role',
+      embeds: [eventEmbed]
+    });
     res.status(200).send();
   })
 
