@@ -144,7 +144,7 @@ function parseDatetoString(s, date, time) {
     }
     let returnString;
 	if (date && time) {
-		returnString = `${b[0]} ${b[1]} ${b[2]} ${b[3]} ${b[4]}`
+		returnString = `${b[0]} - ${b[1]} ${b[2]}, ${b[3]} - ${b[4]}`
 	} else if (time) {
 		returnString = `${b[4]}`
 	}
