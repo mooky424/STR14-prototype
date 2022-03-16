@@ -131,11 +131,15 @@ function parseDatetoString(s, date, time) {
 	const tempDate = new Date(s);
     tempDate.setHours(tempDate.getHours()+8);
 	const b = (tempDate.toString()).split(' ');
+    let returnString;
 	if (date && time) {
-		return `${b[0]} ${b[1]} ${b[2]} ${b[3]} ${b[4]}`
+		returnString = `${b[0]} ${b[1]} ${b[2]} ${b[3]} ${b[4]}`
 	} else if (time) {
-		return `${b[4]}`
+		returnString = `${b[4]}`
 	}
+    const splitArray = returnString.split(" ");
+    console.log(splitArray);
+    return returnString;
 }
 
 
