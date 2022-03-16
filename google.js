@@ -130,14 +130,17 @@ async function addEvent(eventTitle, eventDescription = undefined, eventStartTime
 function parseDatetoString(s, date, time) {
 	const tempDate = new Date(s);
     tempDate.setHours(tempDate.getHours()+8);
-	const b = (tempDate.toString()).split(' ');
-    const timeTemp = (b.pop()).split(":");
+	let b = (tempDate.toString()).split(' ');
+    const timeTemp = b[4].split(":");
+    console.log(b);
     if (parseInt(timeTemp[0]) > 12) {
-        const hour = (timeTemp.shift()).parseInt()
+        const hour = parseInt(timeTemp.shift())
         timeTemp.unshift((hour-12).toString())
         console.log(timeTemp);
+        b[4] = `${timeTemp[0]}:${timeTemp[1]}:${timeTemp[2]} PM`
     } else if (parseInt(timeTemp[0]) < 12) {
         console.log(timeTemp);
+        b[4] = `${timeTemp[0]}:${timeTemp[1]}:${timeTemp[2]} AM`
     }
     let returnString;
 	if (date && time) {
@@ -147,7 +150,6 @@ function parseDatetoString(s, date, time) {
 	}
     return returnString;
 }
-
 
 module.exports = {
     addEvent,
