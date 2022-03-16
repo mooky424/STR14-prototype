@@ -131,13 +131,13 @@ function parseDatetoString(s, date, time) {
 	const tempDate = new Date(s);
     tempDate.setHours(tempDate.getHours()+8);
 	const b = (tempDate.toString()).split(' ');
-    const time = (b.pop()).split(":");
-    if (time[0].parseInt() > 12) {
-        const hour = (time.shift()).parseInt()
-        time.unshift((hour-12).toString())
-        console.log(time);
-    } else if (time[0].parseInt() < 12) {
-        console.log(time);
+    const timeTemp = (b.pop()).split(":");
+    if (timeTemp[0].parseInt() > 12) {
+        const hour = (timeTemp.shift()).parseInt()
+        timeTemp.unshift((hour-12).toString())
+        console.log(timeTemp);
+    } else if (timeTemp[0].parseInt() < 12) {
+        console.log(timeTemp);
     }
     let returnString;
 	if (date && time) {
