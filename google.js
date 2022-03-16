@@ -132,11 +132,11 @@ function parseDatetoString(s, date, time) {
     tempDate.setHours(tempDate.getHours()+8);
 	const b = (tempDate.toString()).split(' ');
     const timeTemp = (b.pop()).split(":");
-    if (timeTemp[0].parseInt() > 12) {
+    if (parseInt(timeTemp[0]) > 12) {
         const hour = (timeTemp.shift()).parseInt()
         timeTemp.unshift((hour-12).toString())
         console.log(timeTemp);
-    } else if (timeTemp[0].parseInt() < 12) {
+    } else if (parseInt(timeTemp[0]) < 12) {
         console.log(timeTemp);
     }
     let returnString;
