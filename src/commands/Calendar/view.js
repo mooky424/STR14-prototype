@@ -6,8 +6,8 @@ const {
 } = require('discord.js');
 const {
 	use
-} = require('express\\lib\\application');
-const calendar = require(`..\\..\\..\\google`);
+} = require('express/lib/application');
+const calendar = require(`../../../google`);
 
 module.exports = {
 	data: new SlashCommandBuilder()

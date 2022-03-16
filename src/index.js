@@ -6,7 +6,7 @@ const {
   Collection,
   MessageEmbed
 } = require('discord.js');
-const calendar = require('..\\google');
+const calendar = require('../google');
 
 //Webserver initialization and port
 const express = require("express");
@@ -14,9 +14,9 @@ const axios = require("axios").default;
 const app = express();
 const port = 3000;
 
-const functions = fs.readdirSync(".\\src\\functions").filter(file => file.endsWith(".js"));
-const commandFolder = fs.readdirSync(".\\src\\commands");
-const eventFiles = fs.readdirSync(".\\src\\events").filter(file => file.endsWith(".js"));
+const functions = fs.readdirSync("./src/functions").filter(file => file.endsWith(".js"));
+const commandFolder = fs.readdirSync("./src/commands");
+const eventFiles = fs.readdirSync("./src/events").filter(file => file.endsWith(".js"));
 
 //initialize client with necesssary intents
 const client = new Client({
@@ -30,11 +30,11 @@ client.commands = new Collection();
 
 (async () => {
   for (file of functions) {
-    require(`.\\functions\\${file}`)(client);
+    require(`./functions/${file}`)(client);
   }
 
-  client.handleEvents(eventFiles, ".\\events");
-  client.handleCommands(commandFolder, ".\\commands")
+  client.handleEvents(eventFiles, "./events");
+  client.handleCommands(commandFolder, "./commands")
   client.login(process.env.DISCORD_TOKEN);
 
 })();

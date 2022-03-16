@@ -4,7 +4,7 @@ const {
 const {
 	MessageEmbed
 } = require('discord.js');
-const calendar = require(`..\\..\\..\\google`);
+const calendar = require(`../../../google`);
 
 const monthIntegerArray = [
 	['January', 0],
