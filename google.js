@@ -129,7 +129,7 @@ async function addEvent(eventTitle, eventDescription = undefined, eventStartTime
 
 function parseDatetoString(s, date, time) {
 	const tempDate = new Date(s);
-    tempDate.setHours(tempDate.getHours()+8);
+    tempDate.setHours(tempDate.getHours());
 	let b = (tempDate.toString()).split(' ');
     const timeTemp = b[4].split(":");
     console.log(b);
