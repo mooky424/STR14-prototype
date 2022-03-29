@@ -43,8 +43,8 @@ client.on('ready', () => {
   //When server receives POST request, send details to discord
   app.post("/", (req, res) => {
 
-    console.log(`Request incoming:
-    ${req.body}`);
+    console.log(`Request incoming with body:`);
+    console.log(req.body);
 
     const {
       eventTitle,
