@@ -44,7 +44,7 @@ client.on('ready', () => {
   app.post("/", (req, res) => {
 
     console.log(`Request incoming:
-    ${req}`);
+    ${req.body}`);
 
     const {
       eventTitle,
@@ -53,7 +53,7 @@ client.on('ready', () => {
 
     if (eventTitle) {
       client.channels.cache.get(process.env.DISCORD_CHANNELID).send({
-        content: `Hello @everyone\n${eventTitle} is starting in 15 minutes!\nMeet Link: ${eventLink}`
+        content: `Hello @everyone\n${eventTitle} is starting soon!\nMeet Link: ${eventLink}`
       });
       res.status(200).send();
       console.log(`Successfully sent event to channel`);
