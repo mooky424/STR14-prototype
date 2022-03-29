@@ -42,15 +42,25 @@ client.commands = new Collection();
 client.on('ready', () => {
   //When server receives POST request, send details to discord
   app.post("/", (req, res) => {
-    const { eventTitle, eventLink} = req.body;
 
-    const eventEmbed = new MessageEmbed()
-      .setTitle(`${eventTitle} is starting in 15 minutes!\nMeet Link: ${eventLink}`) 
-    client.channels.cache.get(process.env.DISCORD_CHANNELID).send({
-      content: 'Hello @everyone',
-      embeds: [eventEmbed]
-    });
-    res.status(200).send();
+    console.log(`Request incoming:
+    ${req}`);
+
+    const {
+      eventTitle,
+      eventLink
+    } = req.body;
+
+    if (eventTitle) {
+      client.channels.cache.get(process.env.DISCORD_CHANNELID).send({
+        content: `Hello @everyone\n${eventTitle} is starting in 15 minutes!\nMeet Link: ${eventLink}`
+      });
+      res.status(200).send();
+      console.log(`Successfully sent event to channel`);
+    } else {
+      res.status(400).send('Invalid Title')
+      console.error(`Invalid Title request`)
+    }
   })
 
 })

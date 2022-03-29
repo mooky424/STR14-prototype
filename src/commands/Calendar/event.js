@@ -114,6 +114,8 @@ module.exports = {
 	async execute(interaction, client) {
 		if (interaction.options.getSubcommand() === 'create') {
 
+			console.log(`event create command triggered!`);
+
 			if (!eventWizardState) { //Check if ongoing event wizard\
 
 				eventWizardState = true; //Initiates event wizard
@@ -135,6 +137,8 @@ module.exports = {
 
 		} else if (interaction.options.getSubcommand() === 'cancel') {
 
+			console.log(`event cancel command triggered!`);
+
 			await checkState(interaction, eventWizardState, async () => {
 				resetValues();
 				await interaction.reply({
@@ -145,6 +149,8 @@ module.exports = {
 
 		} else if (interaction.options.getSubcommand() === 'review') {
 
+			console.log(`event review command triggered!`);
+
 			await checkState(interaction, eventWizardState, async () => {
 				await interaction.reply({
 					embeds: [eventEmbed],
@@ -153,6 +159,8 @@ module.exports = {
 			})
 
 		} else if (interaction.options.getSubcommand() === 'description') {
+
+			console.log(`event description command triggered!`);
 
 			await checkState(interaction, eventWizardState, async () => {
 				description = interaction.options.getString('description');
@@ -167,6 +175,9 @@ module.exports = {
 			})
 
 		} else if (interaction.options.getSubcommand() === 'start') {
+
+			console.log(`event start command triggered!`);
+
 			await checkState(interaction, eventWizardState, async () => {
 				const month = interaction.options.getInteger('month');
 				const day = interaction.options.getInteger('day');
@@ -186,6 +197,9 @@ module.exports = {
 				});
 			})
 		} else if (interaction.options.getSubcommand() === 'end') {
+
+			console.log(`event end command triggered!`);
+
 			await checkState(interaction, eventWizardState, async () => {
 				const month = interaction.options.getInteger('month');
 				const day = interaction.options.getInteger('day');
@@ -212,6 +226,9 @@ module.exports = {
 				}
 			})
 		} else if (interaction.options.getSubcommand() === 'confirm') {
+
+			console.log(`event confirm command triggered!`);
+
 			await checkState(interaction, eventWizardState, async () => {
 
 				if (start && end) {

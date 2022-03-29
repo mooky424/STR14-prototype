@@ -24,7 +24,7 @@ module.exports = {
 		),
 	async execute(interaction) {
 		if (interaction.options.getSubcommand() === 'upcoming') {
-			console.log("User is viewing upcoming");
+			console.log("view upcoming command triggered");
 			calendar.viewEvents(true, async (items) => {
 				const eventEmbed = new MessageEmbed()
 					.setTitle('Upcoming Events')
@@ -50,7 +50,7 @@ module.exports = {
 				console.log("Success!");
 			})
 		} else if (interaction.options.getSubcommand() === 'today') {
-			console.log("User is viewing today");
+			console.log("view today command triggered");
 			calendar.viewEvents(false, async (items) => {
 				const eventEmbed = new MessageEmbed()
 					.setTitle('Events Today')
@@ -76,7 +76,7 @@ module.exports = {
 				console.log("Success!");
 			})
 		} else if (interaction.options.getSubcommand() === 'calendar') {
-			console.log("User is viewing calendar");
+			console.log("view calendar command triggered");
 			calendar.viewCalendar((id) => {
 				interaction.reply({
 					content: `Calendar Id: ${id}\nUse this ID to subscribe to the calendar`,
