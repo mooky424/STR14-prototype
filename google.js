@@ -74,7 +74,7 @@ async function viewEvents(upcoming = false, callback) {
     });
 }
 
-async function findCalendar(title) {
+async function findCalendar(title, callback) {
 
     const res = await calendar.calendarList.list();
 
@@ -85,7 +85,7 @@ async function findCalendar(title) {
 
         if (query.toLowerCase() === (calendarItems[i].summary).toLowerCase()) {
             const result = calendarItems[i].id;
-            return result;
+            callback(result)
         };
     };
 }

@@ -3,13 +3,15 @@ const fs = require('fs');
 const {
   Client,
   Intents,
-  Collection,
-  MessageEmbed
+  Collection
 } = require('discord.js');
 const calendar = require('../google');
 
 //Webserver initialization and port
 const express = require("express");
+const {
+  baremetalsolution
+} = require("googleapis/build/src/apis/baremetalsolution");
 const axios = require("axios").default;
 const app = express();
 const port = 3000;
@@ -39,7 +41,23 @@ client.commands = new Collection();
 
 })();
 
+
 client.on('ready', () => {
+
+  //get all roles in server once ready
+
+  const sections = [];
+
+  guild = client.guilds.cache.get(process.env.DISCORD_GUILDID);
+  roles = guild.roles.fetch().then(res => {
+    res.each(role => {
+      sections.push({
+        name: role.name,
+        id: role.id
+      })
+    })
+  })
+
   //When server receives POST request, send details to discord
   app.post("/", (req, res) => {
 
@@ -51,12 +69,21 @@ client.on('ready', () => {
       eventLink
     } = req.body;
 
+    let eventMessage = `Hello `;
+
     if (eventTitle) {
+      eventMessage += checkRoles(eventTitle, sections);
+      eventMessage += `\n**${eventTitle}** is starting soon!`;
+      if (eventLink) {
+        eventMessage += `\nMeet Link: ${eventLink}`;
+      }
+      console.log(`Sending message:\n${eventMessage}`);
       client.channels.cache.get(process.env.DISCORD_CHANNELID).send({
-        content: `Hello @everyone\n${eventTitle} is starting soon!\nMeet Link: ${eventLink}`
+        content: eventMessage
+      }).then(() => {
+        console.log(`Successfully sent event to channel`);
+        res.status(200).send();
       });
-      res.status(200).send();
-      console.log(`Successfully sent event to channel`);
     } else {
       res.status(400).send('Invalid Title')
       console.error(`Invalid Title request`)
@@ -89,3 +116,28 @@ app.use((error, req, res, next) => {
 app.listen(port, () =>
   console.log(`Example app listening at http://localhost:${port}`)
 );
+
+function checkRoles(title, sections) {
+
+  switch (title) {
+    case 'Research 1':
+      title = 'Grade 10';
+      break;
+    case 'Research 2':
+      title = 'Grade 11';
+      break;
+    case 'Research 3':
+      title = 'Grade 12';
+      break;
+    default:
+      title = title;
+  }
+
+  for (i = 0; i < sections.length; i++) {
+    const pattern = new RegExp(`${sections[i].name}`, 'i'); //make a regular expression (case insensitive) to match to title later
+    if (title.search(pattern) >= 0) {
+      return `<@&${sections[i].id}>`;
+    }
+  }
+  return `everyone`
+}

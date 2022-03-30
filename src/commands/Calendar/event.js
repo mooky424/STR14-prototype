@@ -250,9 +250,11 @@ module.exports = {
 						ephemeral: true
 					})
 
-					calendar.addEvent(title, description, start, end).then(async () => {
-						resetValues();
-					})
+					// calendar.addEvent(title, description, start, end).then(async () => {
+					// 	resetValues();
+					// })
+
+					resetValues();
 
 					await interaction.editReply({
 						content: `Succesfully inserted the event:`,
