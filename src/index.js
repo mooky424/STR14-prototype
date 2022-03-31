@@ -119,6 +119,8 @@ app.listen(port, () =>
 
 function checkRoles(title, sections) {
 
+  //Whole batch meetings convert to appropriate titles for matching
+
   switch (title) {
     case 'Research 1':
       title = 'Grade 10';
@@ -127,6 +129,9 @@ function checkRoles(title, sections) {
       title = 'Grade 11';
       break;
     case 'Research 3':
+      title = 'Grade 12';
+      break;
+    case 'Mathematics 6':
       title = 'Grade 12';
       break;
     default:
