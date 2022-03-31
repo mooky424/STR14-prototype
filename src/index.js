@@ -58,6 +58,7 @@ client.on('ready', () => {
     })
   })
 
+
   //When server receives POST request, send details to discord
   app.post("/", (req, res) => {
 
@@ -93,6 +94,8 @@ client.on('ready', () => {
 })
 
 app.use(express.json());
+
+// Test server is working if html page has loaded
 
 app.get("/", (req, res) => res.send(`
       <html>
