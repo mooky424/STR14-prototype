@@ -124,7 +124,9 @@ function checkRoles(title, sections) {
 
   //Whole batch meetings convert to appropriate titles for matching
 
-  switch (title) {
+  eventSubject = (title.split(' ')).slice(0,2)
+
+  switch (eventSubject.join(' ')) {
     case 'Research 1':
       title = 'Grade 10';
       break;
