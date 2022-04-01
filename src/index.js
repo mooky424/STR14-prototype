@@ -124,23 +124,24 @@ function checkRoles(title, sections) {
 
   //Whole batch meetings convert to appropriate titles for matching
 
-  eventSubject = (title.split(' ')).slice(0,2)
-
-  switch (eventSubject.join(' ')) {
-    case 'Research 1':
-      title = 'Grade 10';
-      break;
-    case 'Research 2':
-      title = 'Grade 11';
-      break;
-    case 'Research 3':
-      title = 'Grade 12';
-      break;
-    case 'Mathematics 6':
-      title = 'Grade 12';
-      break;
-    default:
-      title = title;
+  if (title.search(/\(/g) < 0) {
+    eventSubject = (title.split(' ')).slice(0, 2)
+    switch (eventSubject.join(' ')) {
+      case 'Research 1':
+        title = 'Grade 10';
+        break;
+      case 'Research 2':
+        title = 'Grade 11';
+        break;
+      case 'Research 3':
+        title = 'Grade 12';
+        break;
+      case 'Mathematics 6':
+        title = 'Grade 12';
+        break;
+      default:
+        title = title;
+    }
   }
 
   for (i = 0; i < sections.length; i++) {
