@@ -9,13 +9,11 @@ const calendar = require('../google');
 
 //Webserver initialization and port
 const express = require("express");
-const {
-  baremetalsolution
-} = require("googleapis/build/src/apis/baremetalsolution");
 const axios = require("axios").default;
 const app = express();
 const port = 3000;
 
+//Initialize locations of functions, commands, and event handlers for DiscordJS
 const functions = fs.readdirSync("./src/functions").filter(file => file.endsWith(".js"));
 const commandFolder = fs.readdirSync("./src/commands");
 const eventFiles = fs.readdirSync("./src/events").filter(file => file.endsWith(".js"));
@@ -28,6 +26,7 @@ const client = new Client({
   ]
 });
 
+//Initialize Collection for commands to be pushed into server
 client.commands = new Collection();
 
 (async () => {
