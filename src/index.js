@@ -1,11 +1,14 @@
+//Import Modules
 require("dotenv").config();
 const fs = require('fs');
+const calendar = require('../google');
+
 const {
   Client,
   Intents,
   Collection
 } = require('discord.js');
-const calendar = require('../google');
+
 
 //Webserver initialization and port
 const express = require("express");

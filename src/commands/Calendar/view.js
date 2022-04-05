@@ -4,9 +4,6 @@ const {
 const {
 	MessageEmbed
 } = require('discord.js');
-const {
-	use
-} = require('express/lib/application');
 const calendar = require(`../../../google`);
 
 module.exports = {

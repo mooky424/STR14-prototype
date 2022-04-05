@@ -1,13 +1,5 @@
 require('dotenv').config();
-
-const fs = require('fs');
-const readline = require('readline');
-const {
-    google
-} = require('googleapis');
-const {
-    time
-} = require('console');
+const { google } = require('googleapis');
 const calendarId = process.env.CALENDAR_ID;
 
 const oAuth2Client = new google.auth.OAuth2(process.env.CLIENT_ID, process.env.CLIENT_SECRET);
