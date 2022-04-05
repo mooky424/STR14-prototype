@@ -40,10 +40,10 @@ client.commands = new Collection();
 
 })();
 
+app.use(express.json());
 
-client.on('ready', () => {
-
-  //get all roles in server once ready
+//When server receives POST request, send details to discord
+app.post("/", (req, res) => {
 
   const sections = [];
 
@@ -57,42 +57,35 @@ client.on('ready', () => {
     })
   })
 
+  console.log(`Request incoming with body:`);
+  console.log(req.body);
 
-  //When server receives POST request, send details to discord
-  app.post("/", (req, res) => {
+  const {
+    eventTitle,
+    eventLink
+  } = req.body;
 
-    console.log(`Request incoming with body:`);
-    console.log(req.body);
+  let eventMessage = `Hello `;
 
-    const {
-      eventTitle,
-      eventLink
-    } = req.body;
-
-    let eventMessage = `Hello `;
-
-    if (eventTitle) {
-      eventMessage += checkRoles(eventTitle, sections);
-      eventMessage += `\n**${eventTitle}** is starting soon!`;
-      if (eventLink) {
-        eventMessage += `\nMeet Link: ${eventLink}`;
-      }
-      console.log(`Sending message:\n${eventMessage}`);
-      client.channels.cache.get(process.env.DISCORD_CHANNELID).send({
-        content: eventMessage
-      }).then(() => {
-        console.log(`Successfully sent event to channel`);
-        res.status(200).send();
-      });
-    } else {
-      res.status(400).send('Invalid Title')
-      console.error(`Invalid Title request`)
+  if (eventTitle) {
+    eventMessage += checkRoles(eventTitle, sections);
+    eventMessage += `\n**${eventTitle}** is starting soon!`;
+    if (eventLink) {
+      eventMessage += `\nMeet Link: ${eventLink}`;
     }
-  })
-
+    console.log(`Sending message:\n${eventMessage}`);
+    client.channels.cache.get(process.env.DISCORD_CHANNELID).send({
+      content: eventMessage
+    }).then(() => {
+      console.log(`Successfully sent event to channel`);
+      res.status(200).send();
+    });
+  } else {
+    res.status(400).send('Invalid Title')
+    console.error(`Invalid Title request`)
+  }
 })
 
-app.use(express.json());
 
 // Test server is working if html page has loaded
 
